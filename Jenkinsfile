@@ -27,15 +27,24 @@ pipeline {
                 bat 'docker build -t flask-task-manager .'
             }
         }
+
+        stage('Deploy Container') {
+            steps {
+                bat 'docker stop flask-task-manager-container || exit 0'
+                bat 'docker rm flask-task-manager-container || exit 0'
+                bat 'docker run -d -p 5000:5000 --name flask-task-manager-container flask-task-manager'
+            }
+        }
     }
 
     post {
+
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'CI/CD Pipeline completed successfully!'
         }
 
         failure {
-            echo 'Pipeline failed!'
+            echo 'CI/CD Pipeline failed!'
         }
     }
-} 
+}
